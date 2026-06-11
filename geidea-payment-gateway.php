@@ -45,20 +45,13 @@ require_once GPG_PLUGIN_DIR . 'includes/plugin-update-checker/plugin-update-chec
 
 // Guard against duplicate slug registration (causes Fatal Error on AJAX/admin requests)
 if ( ! has_filter( 'puc_is_slug_in_use-geidea-payment-gateway' ) ) {
+    // Use JSON file instead of GitHub API to avoid 403 rate-limit errors.
+    // Update info.json in the repo whenever a new version is released.
     $gpgUpdateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-        'https://github.com/engmuhammednasser/geidea-payment-gateway/',
+        'https://raw.githubusercontent.com/engmuhammednasser/geidea-payment-gateway/main/info.json',
         __FILE__,
         'geidea-payment-gateway'
     );
-    // Set the branch that contains the stable release.
-    $gpgUpdateChecker->setBranch('main');
-
-    // Optional: GitHub token to avoid API rate limiting (403 errors).
-    // Replace 'YOUR_GITHUB_TOKEN' with your actual token.
-    $gpg_github_token = defined('GPG_GITHUB_TOKEN') ? GPG_GITHUB_TOKEN : '';
-    if ( ! empty( $gpg_github_token ) ) {
-        $gpgUpdateChecker->setAuthentication( $gpg_github_token );
-    }
 }
 
 // Add Settings Link to Plugins Page
