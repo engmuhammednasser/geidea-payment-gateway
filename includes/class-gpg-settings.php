@@ -54,7 +54,6 @@ class GPG_Settings {
             )
         ) );
         add_settings_field( 'GPG_debug_log', __( 'Enable Debug Logging', 'geidea-payment-gateway' ), array( $this, 'render_checkbox' ), 'geidea_gateway_settings', 'GPG_general_section', array( 'id' => 'GPG_debug_log' ) );
-        add_settings_field( 'GPG_github_token', __( 'GitHub Token (For Updates)', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_general_section', array( 'id' => 'GPG_github_token' ) );
 
         // KSA Settings
         add_settings_section( 'GPG_ksa_section', __( 'KSA Settings', 'geidea-payment-gateway' ), null, 'geidea_gateway_settings' );
@@ -96,7 +95,6 @@ class GPG_Settings {
         $sanitized['GPG_customer_country'] = 'SAU';
 
         $sanitized['GPG_debug_log'] = isset( $input['GPG_debug_log'] ) ? 1 : 0;
-        $sanitized['GPG_github_token'] = sanitize_text_field( $input['GPG_github_token'] ?? '' );
 
         $sanitized['GPG_sandbox_public_key'] = sanitize_text_field( $input['GPG_sandbox_public_key'] ?? '' );
         $sanitized['GPG_sandbox_api_password'] = sanitize_text_field( $input['GPG_sandbox_api_password'] ?? '' );

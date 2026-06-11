@@ -43,12 +43,6 @@ $gpgUpdateChecker = PucFactory::buildUpdateChecker(
     __FILE__,
     'geidea-payment-gateway'
 );
-
-$github_token = get_option( 'GPG_settings' );
-if ( isset( $github_token['GPG_github_token'] ) && ! empty( $github_token['GPG_github_token'] ) ) {
-    $gpgUpdateChecker->setAuthentication( $github_token['GPG_github_token'] );
-}
-
 // Set the branch that contains the stable release.
 $gpgUpdateChecker->setBranch('main');
 
