@@ -1,7 +1,7 @@
 {
     "name": "Geidea Payment Gateway",
     "slug": "geidea-payment-gateway",
-    "version": "2.2.9",
+    "version": "2.3.9",
     "author": "Muhammed nasser",
     "author_homepage": "https://engmuhammednasser.github.io",
     "requires": "5.6",
