@@ -28,13 +28,14 @@ class GPG_Settings {
 
         // General Settings
         add_settings_section( 'GPG_general_section', __( 'General Settings', 'geidea-payment-gateway' ), null, 'geidea_gateway_settings' );
-        add_settings_field( 'GPG_enabled', __( 'Enable Gateway', 'geidea-payment-gateway' ), array( $this, 'render_checkbox' ), 'geidea_gateway_settings', 'GPG_general_section', array( 'id' => 'GPG_enabled' ) );
+        add_settings_field( 'GPG_enabled', __( 'Enable Gateway', 'geidea-payment-gateway' ), array( $this, 'render_checkbox' ), 'geidea_gateway_settings', 'GPG_general_section', array( 'id' => 'GPG_enabled', 'description' => __( 'Check this to enable the Geidea Payment Gateway on checkout.', 'geidea-payment-gateway' ) ) );
         add_settings_field( 'GPG_mode', __( 'Mode', 'geidea-payment-gateway' ), array( $this, 'render_select' ), 'geidea_gateway_settings', 'GPG_general_section', array( 
             'id' => 'GPG_mode',
             'options' => array(
                 'sandbox' => 'Sandbox/Test',
                 'live' => 'Live/Production',
-            )
+            ),
+            'description' => __( 'Select Live/Production when you are ready to accept real payments.', 'geidea-payment-gateway' )
         ) );
         add_settings_field( 'GPG_currency', __( 'Default Currency', 'geidea-payment-gateway' ), array( $this, 'render_select' ), 'geidea_gateway_settings', 'GPG_general_section', array( 
             'id' => 'GPG_currency',
@@ -51,9 +52,10 @@ class GPG_Settings {
             'options' => array(
                 'ar' => 'Arabic (ar)',
                 'en' => 'English (en)'
-            )
+            ),
+            'description' => __( 'The language displayed on the Geidea checkout page.', 'geidea-payment-gateway' )
         ) );
-        add_settings_field( 'GPG_debug_log', __( 'Enable Debug Logging', 'geidea-payment-gateway' ), array( $this, 'render_checkbox' ), 'geidea_gateway_settings', 'GPG_general_section', array( 'id' => 'GPG_debug_log' ) );
+        add_settings_field( 'GPG_debug_log', __( 'Enable Debug Logging', 'geidea-payment-gateway' ), array( $this, 'render_checkbox' ), 'geidea_gateway_settings', 'GPG_general_section', array( 'id' => 'GPG_debug_log', 'description' => __( 'Log Geidea API events. Logs are saved to the standard WordPress debug log.', 'geidea-payment-gateway' ) ) );
 
         // KSA Settings
         add_settings_section( 'GPG_ksa_section', __( 'KSA Settings', 'geidea-payment-gateway' ), null, 'geidea_gateway_settings' );
@@ -63,23 +65,23 @@ class GPG_Settings {
 
         // Sandbox Settings
         add_settings_section( 'GPG_sandbox_section', __( 'Sandbox Settings', 'geidea-payment-gateway' ), null, 'geidea_gateway_settings' );
-        add_settings_field( 'GPG_sandbox_public_key', __( 'Sandbox Merchant Public Key', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_sandbox_section', array( 'id' => 'GPG_sandbox_public_key' ) );
-        add_settings_field( 'GPG_sandbox_api_password', __( 'Sandbox API Password', 'geidea-payment-gateway' ), array( $this, 'render_password' ), 'geidea_gateway_settings', 'GPG_sandbox_section', array( 'id' => 'GPG_sandbox_api_password' ) );
+        add_settings_field( 'GPG_sandbox_public_key', __( 'Sandbox Merchant Public Key', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_sandbox_section', array( 'id' => 'GPG_sandbox_public_key', 'description' => __( 'Your test environment public key provided by Geidea.', 'geidea-payment-gateway' ) ) );
+        add_settings_field( 'GPG_sandbox_api_password', __( 'Sandbox API Password', 'geidea-payment-gateway' ), array( $this, 'render_password' ), 'geidea_gateway_settings', 'GPG_sandbox_section', array( 'id' => 'GPG_sandbox_api_password', 'description' => __( 'Your test environment API password.', 'geidea-payment-gateway' ) ) );
         add_settings_field( 'GPG_sandbox_api_base_url', __( 'Sandbox API Base URL', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_sandbox_section', array( 'id' => 'GPG_sandbox_api_base_url', 'default' => 'https://api.ksamerchant.geidea.net/' ) );
         add_settings_field( 'GPG_sandbox_checkout_base_url', __( 'Sandbox Hosted Checkout Base URL', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_sandbox_section', array( 'id' => 'GPG_sandbox_checkout_base_url', 'default' => 'https://www.ksamerchant.geidea.net/hpp/checkout/?' ) );
 
         // Live Settings
         add_settings_section( 'GPG_live_section', __( 'Live Settings', 'geidea-payment-gateway' ), null, 'geidea_gateway_settings' );
-        add_settings_field( 'GPG_live_public_key', __( 'Live Merchant Public Key', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_live_section', array( 'id' => 'GPG_live_public_key' ) );
-        add_settings_field( 'GPG_live_api_password', __( 'Live API Password', 'geidea-payment-gateway' ), array( $this, 'render_password' ), 'geidea_gateway_settings', 'GPG_live_section', array( 'id' => 'GPG_live_api_password' ) );
+        add_settings_field( 'GPG_live_public_key', __( 'Live Merchant Public Key', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_live_section', array( 'id' => 'GPG_live_public_key', 'description' => __( 'Your production public key from the Geidea Merchant Portal.', 'geidea-payment-gateway' ) ) );
+        add_settings_field( 'GPG_live_api_password', __( 'Live API Password', 'geidea-payment-gateway' ), array( $this, 'render_password' ), 'geidea_gateway_settings', 'GPG_live_section', array( 'id' => 'GPG_live_api_password', 'description' => __( 'Your production API password.', 'geidea-payment-gateway' ) ) );
         add_settings_field( 'GPG_live_api_base_url', __( 'Live API Base URL', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_live_section', array( 'id' => 'GPG_live_api_base_url', 'default' => 'https://api.ksamerchant.geidea.net/' ) );
         add_settings_field( 'GPG_live_checkout_base_url', __( 'Live Hosted Checkout Base URL', 'geidea-payment-gateway' ), array( $this, 'render_text' ), 'geidea_gateway_settings', 'GPG_live_section', array( 'id' => 'GPG_live_checkout_base_url', 'default' => 'https://www.ksamerchant.geidea.net/hpp/checkout/?' ) );
 
         // Page Redirect Settings
         add_settings_section( 'GPG_redirect_section', __( 'Page Redirect Settings', 'geidea-payment-gateway' ), null, 'geidea_gateway_settings' );
-        add_settings_field( 'GPG_success_url', __( 'Success Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_success_url' ) );
-        add_settings_field( 'GPG_failed_url', __( 'Failed Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_failed_url' ) );
-        add_settings_field( 'GPG_cancel_url', __( 'Cancel Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_cancel_url' ) );
+        add_settings_field( 'GPG_success_url', __( 'Success Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_success_url', 'description' => __( 'Where to redirect the user after a successful payment.', 'geidea-payment-gateway' ) ) );
+        add_settings_field( 'GPG_failed_url', __( 'Failed Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_failed_url', 'description' => __( 'Where to redirect the user if the payment fails.', 'geidea-payment-gateway' ) ) );
+        add_settings_field( 'GPG_cancel_url', __( 'Cancel Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_cancel_url', 'description' => __( 'Where to redirect the user if they cancel the payment on Geidea.', 'geidea-payment-gateway' ) ) );
     }
 
     public function sanitize_settings( $input ) {
@@ -117,6 +119,9 @@ class GPG_Settings {
         $id = $args['id'];
         $checked = isset( $options[$id] ) && $options[$id] == 1 ? 'checked' : '';
         echo "<input type='checkbox' name='GPG_settings[{$id}]' value='1' {$checked} />";
+        if ( isset( $args['description'] ) ) {
+            echo "<p class='description'>" . esc_html( $args['description'] ) . "</p>";
+        }
     }
 
     public function render_text( $args ) {
@@ -125,6 +130,9 @@ class GPG_Settings {
         $default = $args['default'] ?? '';
         $value = isset( $options[$id] ) ? esc_attr( $options[$id] ) : $default;
         echo "<input type='text' name='GPG_settings[{$id}]' value='{$value}' class='regular-text' />";
+        if ( isset( $args['description'] ) ) {
+            echo "<p class='description'>" . esc_html( $args['description'] ) . "</p>";
+        }
     }
 
     public function render_readonly_text( $args ) {
@@ -132,6 +140,9 @@ class GPG_Settings {
         $default = $args['default'] ?? '';
         echo "<input type='text' value='{$default}' class='regular-text' readonly disabled />";
         echo "<input type='hidden' name='GPG_settings[{$id}]' value='{$default}' />";
+        if ( isset( $args['description'] ) ) {
+            echo "<p class='description'>" . esc_html( $args['description'] ) . "</p>";
+        }
     }
 
     public function render_password( $args ) {
@@ -139,6 +150,9 @@ class GPG_Settings {
         $id = $args['id'];
         $value = esc_attr( $options[$id] ?? '' );
         echo "<input type='password' name='GPG_settings[{$id}]' value='{$value}' class='regular-text' />";
+        if ( isset( $args['description'] ) ) {
+            echo "<p class='description'>" . esc_html( $args['description'] ) . "</p>";
+        }
     }
 
     public function render_url( $args ) {
@@ -146,6 +160,9 @@ class GPG_Settings {
         $id = $args['id'];
         $value = esc_url( $options[$id] ?? '' );
         echo "<input type='url' name='GPG_settings[{$id}]' value='{$value}' class='regular-text' />";
+        if ( isset( $args['description'] ) ) {
+            echo "<p class='description'>" . esc_html( $args['description'] ) . "</p>";
+        }
     }
 
     public function render_select( $args ) {
@@ -158,6 +175,9 @@ class GPG_Settings {
             echo "<option value='" . esc_attr( $key ) . "' {$selected}>" . esc_html( $label ) . "</option>";
         }
         echo "</select>";
+        if ( isset( $args['description'] ) ) {
+            echo "<p class='description'>" . esc_html( $args['description'] ) . "</p>";
+        }
     }
 
     public function render_settings_page() {

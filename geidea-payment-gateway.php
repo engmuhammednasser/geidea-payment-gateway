@@ -3,9 +3,15 @@
  * Plugin Name: Geidea Payment Gateway
  * Plugin URI: https://engmuhammednasser.github.io
  * Description: Secure WordPress payment gateway plugin for integrating Geidea HPP Checkout V2 with Saudi car booking websites using Redirect Mode.
- * Version: 2.1.5
+ * Version: 2.1.6
+ * Requires at least: 5.6
+ * Requires PHP: 7.4
  * Author: Muhammed nasser
+ * Author URI: https://engmuhammednasser.github.io
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: geidea-payment-gateway
+ * Domain Path: /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -46,3 +52,28 @@ $gpgUpdateChecker = PucFactory::buildUpdateChecker(
 // Set the branch that contains the stable release.
 $gpgUpdateChecker->setBranch('main');
 
+// Add Settings Link to Plugins Page
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'gpg_plugin_action_links' );
+function gpg_plugin_action_links( $links ) {
+    $settings_link = '<a href="admin.php?page=geidea_gateway_settings">' . __( 'Settings', 'geidea-payment-gateway' ) . '</a>';
+    $docs_link = '<a href="https://github.com/engmuhammednasser/geidea-payment-gateway" target="_blank">' . __( 'Docs', 'geidea-payment-gateway' ) . '</a>';
+    array_unshift( $links, $settings_link, $docs_link );
+    return $links;
+}
+
+// Activation Onboarding Redirect
+register_activation_hook( __FILE__, 'gpg_plugin_activate' );
+function gpg_plugin_activate() {
+    add_option( 'gpg_do_activation_redirect', true );
+}
+
+add_action( 'admin_init', 'gpg_plugin_redirect' );
+function gpg_plugin_redirect() {
+    if ( get_option( 'gpg_do_activation_redirect', false ) ) {
+        delete_option( 'gpg_do_activation_redirect' );
+        if ( ! isset( $_GET['activate-multi'] ) ) {
+            wp_safe_redirect( admin_url( 'admin.php?page=geidea_gateway_settings' ) );
+            exit;
+        }
+    }
+}
