@@ -10,6 +10,7 @@ class GPG_Booking {
         add_shortcode( 'geidea_return_page', array( $this, 'render_return_page' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         add_filter( 'ashhalan_process_payment_redirect', array( $this, 'process_theme_payment' ), 10, 8 );
+        add_action( 'template_redirect', array( $this, 'handle_global_redirect' ) );
     }
 
     public function enqueue_scripts() {
@@ -149,6 +150,30 @@ class GPG_Booking {
                 'redirect_url' => $checkout_url,
             )
         );
+    }
+
+    public function handle_global_redirect() {
+        if ( isset($_GET['responseCode']) ) {
+            $response_code = sanitize_text_field($_GET['responseCode']);
+            $order_id = isset($_GET['booking_id']) ? sanitize_text_field($_GET['booking_id']) : '';
+
+            $redirect_url = home_url('/');
+
+            if ($response_code === '000') {
+                $redirect_url = GPG_Settings::get_setting('GPG_success_url');
+            } elseif ($response_code === '010') {
+                $redirect_url = GPG_Settings::get_setting('GPG_cancel_url');
+                if ( $order_id ) wp_delete_post( $order_id, true );
+            } else {
+                $redirect_url = GPG_Settings::get_setting('GPG_failed_url');
+                if ( $order_id ) wp_delete_post( $order_id, true );
+            }
+
+            if ( !empty($redirect_url) ) {
+                wp_redirect( $redirect_url );
+                exit;
+            }
+        }
     }
 }
 
