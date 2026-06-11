@@ -9,6 +9,7 @@ class GPG_Booking {
         add_shortcode( 'geidea_car_payment', array( $this, 'render_payment_button' ) );
         add_shortcode( 'geidea_return_page', array( $this, 'render_return_page' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        add_filter( 'ashhalan_process_payment_redirect', array( $this, 'process_theme_payment' ), 10, 8 );
     }
 
     public function enqueue_scripts() {
@@ -27,7 +28,7 @@ class GPG_Booking {
             true 
         );
 
-        wp_localize_script( 'geidea-redirect-js', 'gbgData', array(
+        wp_localize_script( 'geidea-redirect-js', 'gpgData', array(
             'rest_url' => esc_url_raw( rest_url( 'geidea-booking/v1/create-session' ) ),
             'nonce'    => wp_create_nonce( 'wp_rest' ),
             'loading_text' => __( 'جاري تحويلك إلى بوابة الدفع...', 'geidea-payment-gateway' ),
@@ -62,6 +63,92 @@ class GPG_Booking {
         ob_start();
         include GPG_PLUGIN_DIR . 'templates/return-page.php';
         return ob_get_clean();
+    }
+
+    public function process_theme_payment( $response, $payment_method, $order_id, $data, $customer, $qty, $actual_daily_price, $car_id ) {
+        if ( $response !== false ) {
+            return $response; // Already handled
+        }
+
+        if ( $payment_method !== 'geidea' && $payment_method !== 'visa' ) {
+            return $response;
+        }
+
+        update_post_meta( $order_id, '_payment_method', 'geidea' );
+        update_post_meta( $order_id, '_order_status', 'awaiting_payment' );
+
+        $api_client = new GPG_API_Client();
+        $mode = $api_client->get_mode();
+
+        $amount = floatval( $data['total'] );
+        $currency = 'SAR';
+        $timestamp = current_time( 'Y-m-d H:i:s' );
+        
+        $prefix = $mode === 'live' ? 'LIVE-KSA-CAR-' : 'TEST-KSA-CAR-';
+        $merchantReferenceId = $prefix . $order_id . '-' . time();
+
+        $public_key = $api_client->get_public_key();
+        $api_password = $api_client->get_api_password();
+        
+        $returnUrl = GPG_Settings::get_setting( 'GPG_pending_url' );
+        if ( empty( $returnUrl ) ) {
+            $returnUrl = home_url( '/' );
+        }
+        $returnUrl = add_query_arg( 'booking_id', $order_id, $returnUrl );
+
+        $callbackUrl = get_rest_url( null, 'geidea-booking/v1/callback' );
+
+        $signature = GPG_Signature::generate( $public_key, $amount, $currency, $merchantReferenceId, $api_password, $timestamp );
+
+        $payload = array(
+            'amount' => $amount,
+            'currency' => $currency,
+            'timestamp' => $timestamp,
+            'merchantReferenceId' => $merchantReferenceId,
+            'signature' => $signature,
+            'callbackUrl' => $callbackUrl,
+            'returnUrl' => $returnUrl,
+            'language' => 'ar',
+            'paymentOperation' => 'Pay',
+            'customer' => array(
+                'email' => isset($customer['email']) ? sanitize_email($customer['email']) : '',
+                'firstName' => isset($customer['full_name']) ? sanitize_text_field($customer['full_name']) : '',
+                'phoneNumber' => isset($customer['phone']) ? sanitize_text_field($customer['phone']) : '',
+            ),
+            'order' => array(
+                'items' => array(
+                    array(
+                        'merchantItemId' => 'car-' . $car_id,
+                        'name' => isset($data['car_name']) ? sanitize_text_field($data['car_name']) : 'Car Rental',
+                        'count' => $qty,
+                        'price' => $actual_daily_price,
+                        'sku' => strval($car_id)
+                    )
+                )
+            )
+        );
+
+        $api_response = $api_client->create_session( $payload );
+
+        if ( is_wp_error( $api_response ) ) {
+            return array(
+                'success' => false,
+                'message' => 'Geidea Error: ' . $api_response->get_error_message()
+            );
+        }
+
+        $session_id = sanitize_text_field( $api_response['session']['id'] );
+        $checkout_url = $api_client->get_checkout_base_url() . rawurlencode( $session_id );
+
+        return array(
+            'success' => true,
+            'data'    => array(
+                'message'      => 'Redirecting to Geidea...',
+                'order_id'     => $order_id,
+                'redirect'     => true,
+                'redirect_url' => $checkout_url,
+            )
+        );
     }
 }
 
