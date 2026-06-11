@@ -52,6 +52,13 @@ if ( ! has_filter( 'puc_is_slug_in_use-geidea-payment-gateway' ) ) {
     );
     // Set the branch that contains the stable release.
     $gpgUpdateChecker->setBranch('main');
+
+    // Optional: GitHub token to avoid API rate limiting (403 errors).
+    // Replace 'YOUR_GITHUB_TOKEN' with your actual token.
+    $gpg_github_token = defined('GPG_GITHUB_TOKEN') ? GPG_GITHUB_TOKEN : '';
+    if ( ! empty( $gpg_github_token ) ) {
+        $gpgUpdateChecker->setAuthentication( $gpg_github_token );
+    }
 }
 
 // Add Settings Link to Plugins Page
@@ -61,6 +68,38 @@ function gpg_plugin_action_links( $links ) {
     $docs_link = '<a href="https://github.com/engmuhammednasser/geidea-payment-gateway" target="_blank">' . __( 'Docs', 'geidea-payment-gateway' ) . '</a>';
     array_unshift( $links, $settings_link, $docs_link );
     return $links;
+}
+
+// Fallback for "View Details" modal when GitHub API is unavailable (403 / rate limit)
+add_filter( 'plugins_api', 'gpg_plugins_api_fallback', 5, 3 );
+function gpg_plugins_api_fallback( $result, $action, $args ) {
+    if ( $action !== 'plugin_information' ) {
+        return $result;
+    }
+    if ( ! isset( $args->slug ) || $args->slug !== 'geidea-payment-gateway' ) {
+        return $result;
+    }
+    // If PUC already handled it successfully, don't override.
+    if ( $result instanceof stdClass && ! empty( $result->name ) ) {
+        return $result;
+    }
+    // Return local plugin info as fallback.
+    $plugin_data = get_plugin_data( __FILE__, false, false );
+    $info = new stdClass();
+    $info->name          = $plugin_data['Name'];
+    $info->slug          = 'geidea-payment-gateway';
+    $info->version       = $plugin_data['Version'];
+    $info->author        = '<a href="' . esc_url( $plugin_data['AuthorURI'] ) . '">' . esc_html( $plugin_data['Author'] ) . '</a>';
+    $info->homepage      = $plugin_data['PluginURI'];
+    $info->requires      = $plugin_data['RequiresWP'];
+    $info->requires_php  = $plugin_data['RequiresPHP'];
+    $info->last_updated  = date( 'Y-m-d' );
+    $info->download_link = 'https://github.com/engmuhammednasser/geidea-payment-gateway/archive/refs/heads/main.zip';
+    $info->sections      = array(
+        'description' => $plugin_data['Description'],
+        'changelog'   => '<p>See <a href="https://github.com/engmuhammednasser/geidea-payment-gateway" target="_blank">GitHub</a> for full changelog.</p>',
+    );
+    return $info;
 }
 
 // Activation Onboarding Redirect
