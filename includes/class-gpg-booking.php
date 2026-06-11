@@ -9,6 +9,35 @@ class GPG_Booking {
         add_shortcode( 'geidea_car_payment', array( $this, 'render_payment_button' ) );
         add_shortcode( 'geidea_return_page', array( $this, 'render_return_page' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        add_action( 'template_redirect', array( $this, 'handle_global_redirect' ) );
+    }
+
+    public function handle_global_redirect() {
+        if ( isset( $_GET['responseCode'] ) && isset( $_GET['orderId'] ) && isset( $_GET['sessionId'] ) ) {
+            $responseCode = sanitize_text_field( $_GET['responseCode'] );
+            
+            if ( $responseCode === '000' ) {
+                $redirect_url = GPG_Settings::get_setting( 'GPG_success_url' );
+            } else {
+                $redirect_url = GPG_Settings::get_setting( 'GPG_failed_url' );
+            }
+
+            if ( ! empty( $redirect_url ) ) {
+                $current_path = wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+                $target_path = wp_parse_url( $redirect_url, PHP_URL_PATH );
+
+                if ( $current_path !== $target_path ) {
+                    $final_url = add_query_arg( array(
+                        'orderId' => sanitize_text_field( $_GET['orderId'] ),
+                        'responseCode' => $responseCode,
+                        'sessionId' => sanitize_text_field( $_GET['sessionId'] )
+                    ), $redirect_url );
+                    
+                    wp_redirect( $final_url );
+                    exit;
+                }
+            }
+        }
     }
 
     public function enqueue_scripts() {
