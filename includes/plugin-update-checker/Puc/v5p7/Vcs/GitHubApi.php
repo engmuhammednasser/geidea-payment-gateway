@@ -137,7 +137,11 @@ if ( !class_exists(GitHubApi::class, false) ):
 				}
 
 				if ( !empty($release->body) ) {
-					$reference->changelog = Parsedown::instance()->text($release->body);
+					if ( class_exists('Parsedown') ) {
+						$reference->changelog = Parsedown::instance()->text($release->body);
+					} else {
+						$reference->changelog = $release->body;
+					}
 				}
 
 				return $reference;

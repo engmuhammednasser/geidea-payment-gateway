@@ -146,8 +146,11 @@ if ( !class_exists(Api::class, false) ):
 				return array();
 			}
 
-			$parser = new PucReadmeParser();
-			return $parser->parse_readme_contents($fileContents);
+			if ( class_exists('PucReadmeParser') ) {
+				$parser = new PucReadmeParser();
+				return $parser->parse_readme_contents($fileContents);
+			}
+			return array();
 		}
 
 		/**
@@ -305,7 +308,10 @@ if ( !class_exists(Api::class, false) ):
 				return null;
 			}
 
-			return Parsedown::instance()->text($changelog);
+			if ( class_exists('Parsedown') ) {
+				return Parsedown::instance()->text($changelog);
+			}
+			return $changelog;
 		}
 
 		/**
