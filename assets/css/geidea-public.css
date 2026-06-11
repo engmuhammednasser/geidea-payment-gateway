@@ -1,0 +1,36 @@
+/* Geidea Gateway Public Styles */
+.gbg-payment-wrapper { margin: 20px 0; text-align: center; }
+.gbg-pay-button { 
+    padding: 12px 24px; 
+    background-color: #0073aa; 
+    color: #fff; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: 5px; 
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+.gbg-pay-button:hover { background-color: #005177; }
+.gbg-pay-button:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; }
+.gbg-message-container p { margin-top: 10px; font-weight: bold; font-size: 14px; }
+.gbg-message-container .gbg-loading { color: #f5a623; }
+.gbg-message-container .gbg-error { color: #dc3232; }
+
+/* Return page styles */
+.gbg-return-wrapper { text-align: center; padding: 40px 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; max-width: 600px; margin: 0 auto; }
+.gbg-status-pending h3 { color: #f5a623; }
+.gbg-status-error h3 { color: #d0021b; }
+.gbg-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #f5a623;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: gbg-spin 2s linear infinite;
+    margin: 20px auto;
+}
+@keyframes gbg-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
