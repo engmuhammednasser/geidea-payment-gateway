@@ -80,7 +80,6 @@ class GPG_Settings {
         add_settings_field( 'GPG_success_url', __( 'Success Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_success_url' ) );
         add_settings_field( 'GPG_failed_url', __( 'Failed Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_failed_url' ) );
         add_settings_field( 'GPG_cancel_url', __( 'Cancel Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_cancel_url' ) );
-        add_settings_field( 'GPG_pending_url', __( 'Pending / Verification Page URL', 'geidea-payment-gateway' ), array( $this, 'render_url' ), 'geidea_gateway_settings', 'GPG_redirect_section', array( 'id' => 'GPG_pending_url' ) );
     }
 
     public function sanitize_settings( $input ) {
@@ -109,7 +108,6 @@ class GPG_Settings {
         $sanitized['GPG_success_url'] = esc_url_raw( $input['GPG_success_url'] ?? '' );
         $sanitized['GPG_failed_url'] = esc_url_raw( $input['GPG_failed_url'] ?? '' );
         $sanitized['GPG_cancel_url'] = esc_url_raw( $input['GPG_cancel_url'] ?? '' );
-        $sanitized['GPG_pending_url'] = esc_url_raw( $input['GPG_pending_url'] ?? '' );
 
         return $sanitized;
     }

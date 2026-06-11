@@ -91,11 +91,8 @@ class GPG_Booking {
         $public_key = $api_client->get_public_key();
         $api_password = $api_client->get_api_password();
         
-        $returnUrl = GPG_Settings::get_setting( 'GPG_pending_url' );
-        if ( empty( $returnUrl ) ) {
-            $returnUrl = home_url( '/' );
-        }
-        $returnUrl = add_query_arg( 'booking_id', $order_id, $returnUrl );
+        // Automatically use the home URL as the secure return point
+        $returnUrl = add_query_arg( 'booking_id', $order_id, home_url( '/' ) );
 
         $callbackUrl = get_rest_url( null, 'geidea-booking/v1/callback' );
 
