@@ -3,7 +3,7 @@
  * Plugin Name: Geidea Payment Gateway
  * Plugin URI: https://engmuhammednasser.github.io
  * Description: Secure WordPress payment gateway plugin for integrating Geidea HPP Checkout V2 with Saudi car booking websites using Redirect Mode.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Muhammed nasser
  * Text Domain: geidea-payment-gateway
  */
