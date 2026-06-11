@@ -43,13 +43,16 @@ add_action( 'plugins_loaded', 'GPG_saudi_init_plugin' );
 // GitHub Auto Updater
 require_once GPG_PLUGIN_DIR . 'includes/plugin-update-checker/plugin-update-checker.php';
 
-$gpgUpdateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-    'https://github.com/engmuhammednasser/geidea-payment-gateway/',
-    __FILE__,
-    'geidea-payment-gateway'
-);
-// Set the branch that contains the stable release.
-$gpgUpdateChecker->setBranch('main');
+// Guard against duplicate slug registration (causes Fatal Error on AJAX/admin requests)
+if ( ! has_filter( 'puc_is_slug_in_use-geidea-payment-gateway' ) ) {
+    $gpgUpdateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+        'https://github.com/engmuhammednasser/geidea-payment-gateway/',
+        __FILE__,
+        'geidea-payment-gateway'
+    );
+    // Set the branch that contains the stable release.
+    $gpgUpdateChecker->setBranch('main');
+}
 
 // Add Settings Link to Plugins Page
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'gpg_plugin_action_links' );
