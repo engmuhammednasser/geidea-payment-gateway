@@ -43,6 +43,10 @@ class GPG_Logger {
         file_put_contents( $log_file, $log_entry . PHP_EOL, FILE_APPEND );
     }
 
+    public static function info( $message ) {
+        self::log( $message, 'info' );
+    }
+
     public static function debug( $message ) {
         self::log( $message, 'debug' );
     }

@@ -150,26 +150,26 @@ class GPG_Booking {
     }
 
     public function handle_global_redirect() {
-        if ( isset($_GET['responseCode']) ) {
-            $response_code = sanitize_text_field($_GET['responseCode']);
-            $order_id = isset($_GET['booking_id']) ? sanitize_text_field($_GET['booking_id']) : '';
+        if ( ! isset( $_GET['responseCode'] ) || ! is_string( $_GET['responseCode'] ) ) {
+            return;
+        }
 
-            $redirect_url = home_url('/');
+        // Browser return parameters are untrusted and only select a landing page.
+        // Only the verified callback may emit payment-state hooks; never mutate
+        // or delete a booking here, even when the return reports a failure.
+        $response_code = sanitize_text_field( wp_unslash( $_GET['responseCode'] ) );
 
-            if ($response_code === '000') {
-                $redirect_url = GPG_Settings::get_setting('GPG_success_url');
-            } elseif ($response_code === '010') {
-                $redirect_url = GPG_Settings::get_setting('GPG_cancel_url');
-                if ( $order_id ) wp_delete_post( $order_id, true );
-            } else {
-                $redirect_url = GPG_Settings::get_setting('GPG_failed_url');
-                if ( $order_id ) wp_delete_post( $order_id, true );
-            }
+        if ( $response_code === '000' ) {
+            $redirect_url = GPG_Settings::get_setting( 'GPG_success_url' );
+        } elseif ( $response_code === '010' ) {
+            $redirect_url = GPG_Settings::get_setting( 'GPG_cancel_url' );
+        } else {
+            $redirect_url = GPG_Settings::get_setting( 'GPG_failed_url' );
+        }
 
-            if ( !empty($redirect_url) ) {
-                wp_redirect( $redirect_url );
-                exit;
-            }
+        if ( ! empty( $redirect_url ) ) {
+            wp_redirect( $redirect_url );
+            exit;
         }
     }
 }
