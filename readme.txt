@@ -4,7 +4,7 @@ Tags: payment, geidea, saudi arabia, gateway, car rental
 Requires at least: 5.6
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 2.1.7
+Stable tag: 2.3.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,6 +44,9 @@ You can find your Merchant Public Key and API Password in your Geidea Merchant P
 You can use the built-in WordPress filter to process payments. Example:
 `$response = apply_filters( 'ashhalan_process_payment_redirect', false, 'geidea', $order_id, $data, $customer, $qty, $price, $item_id );`
 
+= Does the browser return confirm payment? =
+No. Browser return parameters only choose the configured landing page; they do not confirm, cancel, or delete a booking. Update booking state through `GPG_payment_completed` and `GPG_payment_failed` after callback validation. Success pages must read the stored booking status before showing a payment as confirmed. Failed or cancelled returns retain the booking for reconciliation.
+
 == Screenshots ==
 
 1. screenshot-1.jpg - Geidea Gateway General Settings
@@ -52,6 +55,11 @@ You can use the built-in WordPress filter to process payments. Example:
 4. screenshot-4.jpg - Geidea Test Tools
 
 == Changelog ==
+
+= 2.3.10 =
+* Fix: Remove booking deletion from browser payment returns and ignore malformed response codes.
+* Fix: Add the missing info logger method so validated callbacks can dispatch completion or failure hooks and return a response.
+* Test: Add local regression coverage for return navigation, state preservation, and callback validation with logging enabled and disabled.
 
 = 2.1.5 =
 * Tweak: Automated the Return URL mechanism to use the home URL.
@@ -68,6 +76,9 @@ You can use the built-in WordPress filter to process payments. Example:
 * Initial release of the standalone plugin.
 
 == Upgrade Notice ==
+
+= 2.3.10 =
+Fixes booking deletion triggered by browser return parameters and a fatal error in payment callback logging. Existing landing-page URLs are preserved. Review any previously missing bookings or pending payments against your payment provider records; this update cannot restore deleted data or replay earlier callbacks.
 
 = 2.1.5 =
 This update removes the "Pending Page" setting and automates the return process. No further action is required after updating.
