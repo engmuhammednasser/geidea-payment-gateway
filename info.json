@@ -1,18 +1,18 @@
 {
     "name": "Geidea Payment Gateway",
     "slug": "geidea-payment-gateway",
-    "version": "2.3.9",
+    "version": "2.3.10",
     "author": "Muhammed nasser",
     "author_homepage": "https://engmuhammednasser.github.io",
     "requires": "5.6",
     "tested": "6.8",
     "requires_php": "7.4",
     "homepage": "https://engmuhammednasser.github.io",
-    "last_updated": "2026-06-11",
+    "last_updated": "2026-10-29",
     "download_url": "https://github.com/engmuhammednasser/geidea-payment-gateway/archive/refs/heads/main.zip",
     "sections": {
         "description": "Secure WordPress payment gateway plugin for integrating Geidea HPP Checkout V2 with Saudi car booking websites using Redirect Mode.",
-        "changelog": "<h4>2.2.9</h4><p>Fix: Switch to JSON-based updater - no tokens, no config required.</p><h4>2.1.8</h4><p>Fix: Guard duplicate slug registration to prevent Fatal Error on Check Update.</p><h4>2.1.7</h4><p>Initial stable release.</p>"
+        "changelog": "<h4>2.3.10</h4><p>Fix: Keep browser payment returns read-only and retain bookings on cancellation or failure. Fix: Restore callback completion and failure hooks by adding the missing info logger method.</p><h4>2.2.9</h4><p>Fix: Switch to JSON-based updater - no tokens, no config required.</p><h4>2.1.8</h4><p>Fix: Guard duplicate slug registration to prevent Fatal Error on Check Update.</p><h4>2.1.7</h4><p>Initial stable release.</p>"
     },
     "icons": {
         "1x": "https://raw.githubusercontent.com/engmuhammednasser/geidea-payment-gateway/main/assets/icon-128x128.png",
